@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+plt.style.use('ggplot')
+
 
 class AnimationMaker():
     def __init__(self, theta1file, theta2file, l1, l2):
@@ -24,7 +26,7 @@ class AnimationMaker():
         self.theta2 = theta2[1]
 
     def figure(self):
-        self.fig, ax = plt.subplots(figsize=(10, 10))
+        self.fig, ax = plt.subplots(figsize=(8, 8))
 
         self.line_trajectory, = ax.plot(
             [], [], color='tab:blue', label='trajectory')
@@ -40,7 +42,7 @@ class AnimationMaker():
         ax.set_ylim(-maxlen, maxlen)
         ax.set_aspect('equal')
         # ax.legend(loc='lower left')
-        plt.subplots_adjust(left=0.08, right=0.97, bottom=0.04, top=0.97)
+        plt.subplots_adjust(left=0.1, right=0.97, bottom=0.04, top=0.97)
 
     def _update(self, i):
         theta1 = math.radians(self.theta1[i])
@@ -58,7 +60,7 @@ class AnimationMaker():
         self.line_l2.set_data([x1, x2], [y1, y2])
         self.line_trajectory.set_data(self.trajectory_x, self.trajectory_y)
 
-        plt.title('t = {} [s], (x, y) = ({:3.0f}, {:3.0f})'.format(
+        plt.title('t = {:3.2f} [s], (x, y) = ({:3.0f}, {:3.0f})'.format(
             i / len(self.time), x2, y2))
 
     def makeAnimation(self):
@@ -72,5 +74,5 @@ if __name__ == '__main__':
     ani = animationMaker.makeAnimation()
     ani.save('animation.gif', writer='pillow')
 
-    plt.plot(animationMaker.trajectory_x, animationMaker.trajectory_y)
-    plt.savefig('a.png')
+    # plt.plot(animationMaker.trajectory_x, animationMaker.trajectory_y)
+    plt.savefig('trajectory.png')

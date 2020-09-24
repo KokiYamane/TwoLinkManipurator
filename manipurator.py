@@ -2,6 +2,8 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
+plt.style.use('ggplot')
+
 
 class Manipurator():
     def __init__(self, l1, l2, d0=0):
