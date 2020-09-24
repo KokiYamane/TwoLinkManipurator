@@ -14,8 +14,8 @@ class Manipurator():
     def forwardKinematics(self, theta1, theta2):
         x1 = self.l1 * math.cos(theta1)
         y1 = self.l1 * math.sin(theta1)
-        x2 = x1 + self.l2 * math.cos(theta2)
-        y2 = y1 + self.l2 * math.sin(theta2)
+        x2 = x1 + self.l2 * math.cos(theta1 + theta2)
+        y2 = y1 + self.l2 * math.sin(theta1 + theta2)
         return x2, y2
 
     def inverseKinematics(self, x, y, eps=1e-10):
