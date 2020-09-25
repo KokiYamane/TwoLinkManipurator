@@ -44,23 +44,20 @@ class PathPlanner():
     def angle(self, x1, y1, x2, y2):
         return math.atan2(y2 - y1, x2 - x1)
 
-    def planning(self, x1, y1, x2, y2):
+    def straight(self, x1, y1, x2, y2, t0=0):
         angle = self.angle(x1, y1, x2, y2)
-        print(math.degrees(angle))
-        print(self.vmax ** 2 / self.acc / 2)
 
-        t, v = 0, 0
+        t, v = t0, 0
         x, y = x1, y1
         diff = self.distance(x1, y1, x2, y2)
         diff0 = diff
         distance = 0
 
-        tList, xList, yList, vList = [0], [x1], [y1], [0]
+        tList, xList, yList, vList = [t0], [x1], [y1], [0]
         while diff > 0.1:
             t += self.dt
             if t > 2:
                 break
-            print(diff0 - distance)
 
             if diff0 - distance < self.vmax ** 2 / self.acc / 2:
                 v -= self.acc * self.dt
@@ -80,18 +77,37 @@ class PathPlanner():
             yList.append(y)
             vList.append(v)
 
-            print(t, x, y, diff, v)
-
         return {'t': tList, 'x': xList, 'y': yList, 'v': vList}
+    
+    def planning(self, waypoints):
+        path = {'t': [], 'x': [], 'y': [], 'v': []}
+        t0 = 0
+        print(waypoints)
+        print(waypoints.shape)
+        for i in range(len(waypoints) - 1):
+            pathPart = self.straight(waypoints[i][0], waypoints[i][1], waypoints[i+1][0], waypoints[i+1][1], t0=t0)
+            path['t'].extend(pathPart['t'])
+            path['x'].extend(pathPart['x'])
+            path['y'].extend(pathPart['y'])
+            path['v'].extend(pathPart['v'])
+            t0 = path['t'][-1]
+        print(path)
+        return path
 
 
 if __name__ == '__main__':
     l1 = 140
     l2 = 160
-    vmax = 3.0e3
+    vmax = 0.5e3
     acc = vmax / 0.1
+    waypoints = np.array([
+        [-150, 250],
+        [-100, 40],
+        [-200, 50],
+        [-150, 250],
+    ])
     manipurator = Manipurator(l1, l2)
-    path = PathPlanner(acc, vmax).planning(-150, 250, 150, 250)
+    path = PathPlanner(acc, vmax).planning(waypoints)
     # path = PathPlanner(acc, vmax).planning(100, 50, 300, 150)
 
     theta1List, theta2List = [], []
@@ -99,7 +115,6 @@ if __name__ == '__main__':
         theta1, theta2 = manipurator.inverseKinematics(
             path['x'][i], path['y'][i])
         x, y = manipurator.forwardKinematics(theta1, theta2)
-        print(x, y)
         theta1List.append(math.degrees(theta1))
         theta2List.append(math.degrees(theta2))
 
