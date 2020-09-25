@@ -86,10 +86,12 @@ class PathPlanner():
 
 
 if __name__ == '__main__':
-    manipurator = Manipurator(150, 150)
-    vmax = 308.7904831758910
-    acc = vmax / 0.2
-    path = PathPlanner(acc, vmax).planning(300, 0, 155, 200)
+    l1 = 140
+    l2 = 160
+    vmax = 3.0e3
+    acc = vmax / 0.1
+    manipurator = Manipurator(l1, l2)
+    path = PathPlanner(acc, vmax).planning(-150, 250, 150, 250)
     # path = PathPlanner(acc, vmax).planning(100, 50, 300, 150)
 
     theta1List, theta2List = [], []
@@ -114,3 +116,16 @@ if __name__ == '__main__':
     plt.figure()
     plt.plot(path['t'], path['v'])
     plt.savefig('vel.png')
+
+    plt.figure()
+    omega1 = np.diff(theta1List) * 60**2 / 360
+    omega2 = np.diff(theta2List) * 60**2 / 360
+    omega1 = np.insert(omega1, 0, 0)
+    omega2 = np.insert(omega2, 0, 0)
+    plt.plot(path['t'], omega1, label='theta1')
+    plt.plot(path['t'], omega2, label='theta2')
+    plt.xlabel('time [s]')
+    plt.ylabel('angular velocity [rpm]')
+    plt.ylim(-100, 100)
+    plt.legend()
+    plt.savefig('vel_theta.png')
