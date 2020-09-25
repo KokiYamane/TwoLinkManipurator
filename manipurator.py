@@ -54,7 +54,7 @@ class PathPlanner():
         distance = 0
 
         tList, xList, yList, vList = [t0], [x1], [y1], [0]
-        while diff > 0.1:
+        while diff > 1e-10:
             t += self.dt
             if t > 2:
                 break
@@ -63,8 +63,8 @@ class PathPlanner():
                 v -= self.acc * self.dt
             elif v < self.vmax:
                 v += self.acc * self.dt
-            if v < 0:
-                break
+            # if v < 0:
+                # break
             v = np.clip(v, 0, self.vmax)
 
             x += v * self.dt * math.cos(angle)
@@ -72,18 +72,25 @@ class PathPlanner():
             diff = self.distance(x, y, x2, y2)
             distance += v * self.dt
 
+            print(t, x, y, v, diff)
+
             tList.append(t)
             xList.append(x)
             yList.append(y)
             vList.append(v)
+
+        tList.append(tList[-1] + self.dt)
+        xList.append(xList[-1])
+        yList.append(yList[-1])
+        vList.append(0)
 
         return {'t': tList, 'x': xList, 'y': yList, 'v': vList}
     
     def planning(self, waypoints):
         path = {'t': [], 'x': [], 'y': [], 'v': []}
         t0 = 0
-        print(waypoints)
-        print(waypoints.shape)
+        # print(waypoints)
+        # print(waypoints.shape)
         for i in range(len(waypoints) - 1):
             pathPart = self.straight(waypoints[i][0], waypoints[i][1], waypoints[i+1][0], waypoints[i+1][1], t0=t0)
             path['t'].extend(pathPart['t'])
@@ -91,7 +98,7 @@ class PathPlanner():
             path['y'].extend(pathPart['y'])
             path['v'].extend(pathPart['v'])
             t0 = path['t'][-1]
-        print(path)
+        # print(path)
         return path
 
 
@@ -100,11 +107,12 @@ if __name__ == '__main__':
     l2 = 160
     vmax = 0.5e3
     acc = vmax / 0.1
+    offset = 100
     waypoints = np.array([
-        [-150, 250],
-        [-100, 40],
-        [-200, 50],
-        [-150, 250],
+        [-150, 20 + offset],
+        [0, 20 + offset],
+        [0, 80 + offset],
+        [150, 80 + offset],
     ])
     manipurator = Manipurator(l1, l2)
     path = PathPlanner(acc, vmax).planning(waypoints)
@@ -118,20 +126,28 @@ if __name__ == '__main__':
         theta1List.append(math.degrees(theta1))
         theta2List.append(math.degrees(theta2))
 
+    # save to file
     theta1 = np.stack([path['t'], theta1List], axis=1)
     theta2 = np.stack([path['t'], theta2List], axis=1)
     np.savetxt('theta1.csv', theta1, delimiter=',', fmt='%04f')
     np.savetxt('theta2.csv', theta2, delimiter=',', fmt='%04f')
 
+    # path graph
     plt.figure()
     # plt.plot([300, 155], [0, 200])
     plt.plot(path['x'], path['y'])
+    plt.xlabel('x [mm]')
+    plt.ylabel('y [mm]')
     plt.savefig('path.png')
 
+    # velocity graph
     plt.figure()
     plt.plot(path['t'], path['v'])
+    plt.xlabel('time [s]')
+    plt.ylabel('velocity [mm/s]')
     plt.savefig('vel.png')
 
+    # anguler velocity graph
     plt.figure()
     omega1 = np.diff(theta1List) * 60**2 / 360
     omega2 = np.diff(theta2List) * 60**2 / 360
