@@ -129,8 +129,8 @@ if __name__ == '__main__':
     # save to file
     theta1 = np.stack([path['t'], theta1List], axis=1)
     theta2 = np.stack([path['t'], theta2List], axis=1)
-    np.savetxt('theta1.csv', theta1, delimiter=',', fmt='%04f')
-    np.savetxt('theta2.csv', theta2, delimiter=',', fmt='%04f')
+    np.savetxt('data/theta1.csv', theta1, delimiter=',', fmt='%04f')
+    np.savetxt('data/theta2.csv', theta2, delimiter=',', fmt='%04f')
 
     # path graph
     plt.figure()
@@ -138,14 +138,14 @@ if __name__ == '__main__':
     plt.plot(path['x'], path['y'])
     plt.xlabel('x [mm]')
     plt.ylabel('y [mm]')
-    plt.savefig('path.png')
+    plt.savefig('graph/path.png')
 
     # velocity graph
     plt.figure()
     plt.plot(path['t'], path['v'])
     plt.xlabel('time [s]')
     plt.ylabel('velocity [mm/s]')
-    plt.savefig('vel.png')
+    plt.savefig('graph/vel.png')
 
     # anguler velocity graph
     plt.figure()
@@ -159,4 +159,4 @@ if __name__ == '__main__':
     plt.ylabel('angular velocity [rpm]')
     plt.ylim(-100, 100)
     plt.legend()
-    plt.savefig('vel_theta.png')
+    plt.savefig('graph/vel_theta.png')
