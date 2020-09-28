@@ -129,8 +129,10 @@ if __name__ == '__main__':
     # save to file
     theta1 = np.stack([path['t'], theta1List], axis=1)
     theta2 = np.stack([path['t'], theta2List], axis=1)
+    trajectory = np.stack([path['t'], theta1List, theta2List], axis=1)
     np.savetxt('data/theta1.csv', theta1, delimiter=',', fmt='%04f')
     np.savetxt('data/theta2.csv', theta2, delimiter=',', fmt='%04f')
+    np.savetxt('data/trajectory.csv', trajectory, delimiter=',', fmt='%04f')
 
     # path graph
     plt.figure()
