@@ -2,9 +2,9 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-# import seaborn as sns
+import seaborn as sns
 
-# sns.set()
+sns.set()
 
 
 class AnimationMaker():
@@ -72,9 +72,9 @@ class AnimationMaker():
 if __name__ == '__main__':
     # animationMaker = AnimationMaker('theta1example.csv', 'theta2example.csv', 150, 150)
     animationMaker = AnimationMaker(
-        'data/theta1_tmp.csv', 'data/theta2_tmp.csv', 140, 160)
+        'data/theta1.csv', 'data/theta2.csv', 140, 160)
     ani = animationMaker.makeAnimation()
-    ani.save('graph/animation_tmp.gif', writer='pillow')
+    ani.save('graph/animation.gif', writer='pillow')
 
     # plt.plot(animationMaker.trajectory_x, animationMaker.trajectory_y)
-    plt.savefig('graph/trajectory_tmp.png')
+    plt.savefig('graph/trajectory.png')
