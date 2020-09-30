@@ -1,9 +1,9 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 
-sns.set()
+# sns.set()
 
 class Manipurator():
     def __init__(self, l1, l2, d0=0):
@@ -31,7 +31,6 @@ class Manipurator():
 
         return theta1, theta2
 
-
 class PathPlanner():
     def __init__(self, acc, vmax, dt=0.01):
         self.acc = acc
@@ -58,12 +57,9 @@ class PathPlanner():
             t += self.dt
 
             if diff0 - distance < self.vmax ** 2 / self.acc / 2:
-                # v -= self.acc * self.dt
                 v = self.acc * self.dt * (diff0 - distance)
             elif v < self.vmax:
                 v += self.acc * self.dt
-            # if v < 0:
-                # break
             v = np.clip(v, 0, self.vmax)
 
             x += v * self.dt * math.cos(theta)
@@ -90,8 +86,6 @@ class PathPlanner():
     def planning_straight(self, waypoints):
         path = {'t': [], 'x': [], 'y': [], 'v': []}
         t0 = 0
-        # print(waypoints)
-        # print(waypoints.shape)
         for i in range(len(waypoints) - 1):
             pathPart = self.straight(
                 waypoints[i][0], waypoints[i][1], waypoints[i + 1][0], waypoints[i + 1][1], t0=t0)
@@ -100,7 +94,6 @@ class PathPlanner():
             path['y'].extend(pathPart['y'])
             path['v'].extend(pathPart['v'])
             t0 = path['t'][-1]
-        # print(path)
         return path
 
     def planning(self, waypoints):
@@ -118,13 +111,8 @@ class PathPlanner():
         diff = self.distance(waypoints[i - 1][0], waypoints[i - 1][1],
                              waypoints[i][0], waypoints[i][1])
         while t < 5:
-            # if t > 5:
-            #     break
             t += self.dt
 
-            # diff0 = diff
-            # diff = self.distance(x, y, waypoints[i][0], waypoints[i][1])
-            # delta = self.vmax ** 2 / self.acc / 2
             delta = 6
             if diff - distance < 1e-10:
                 print('a')
@@ -179,6 +167,12 @@ if __name__ == '__main__':
         [-160, 10 + offset],
         [8, 10 + offset],
         [8, 80 + offset],
+        [160, 80 + offset],
+    ])
+    waypoints = np.array([
+        [-160, 20 + offset],
+        [0, 20 + offset],
+        [0, 80 + offset],
         [160, 80 + offset],
     ])
     # waypoints = np.array([
