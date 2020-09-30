@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 # sns.set()
 
+
 class Manipurator():
     def __init__(self, l1, l2, d0=0):
         self.l1 = l1
@@ -30,6 +31,7 @@ class Manipurator():
         theta2 = math.pi - math.acos(tmp2)
 
         return theta1, theta2
+
 
 class PathPlanner():
     def __init__(self, acc, vmax, dt=0.01):

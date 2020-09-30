@@ -71,7 +71,8 @@ class AnimationMaker():
 
 if __name__ == '__main__':
     # animationMaker = AnimationMaker('theta1example.csv', 'theta2example.csv', 150, 150)
-    animationMaker = AnimationMaker('data/theta1_tmp.csv', 'data/theta2_tmp.csv', 140, 160)
+    animationMaker = AnimationMaker(
+        'data/theta1_tmp.csv', 'data/theta2_tmp.csv', 140, 160)
     ani = animationMaker.makeAnimation()
     ani.save('graph/animation_tmp.gif', writer='pillow')
 
