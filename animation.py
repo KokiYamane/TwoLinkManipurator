@@ -2,14 +2,15 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import matplotlib.patches as patches
 import seaborn as sns
 
 sns.set()
 
 
 class AnimationMaker():
-    def __init__(self, theta1file, theta2file, l1, l2):
-        self.loadData(theta1file, theta2file)
+    def __init__(self, theta1file, theta2file, l1=150, l2=150):
+        self._loadData(theta1file, theta2file)
 
         self.l1 = l1
         self.l2 = l2
@@ -17,31 +18,34 @@ class AnimationMaker():
         self.trajectory_x = []
         self.trajectory_y = []
 
-        self.figure()
+        self._init_figure()
 
-    def loadData(self, theta1file, theta2file):
+    def _loadData(self, theta1file, theta2file):
         theta1 = np.loadtxt(theta1file, delimiter=',', unpack=True)
         theta2 = np.loadtxt(theta2file, delimiter=',', unpack=True)
         self.time = theta1[0]
         self.theta1 = theta1[1]
         self.theta2 = theta2[1]
 
-    def figure(self):
-        self.fig, ax = plt.subplots(figsize=(6, 6))
+    def _init_figure(self):
+        self.fig, self.ax = plt.subplots(figsize=(6, 6))
 
-        self.line_trajectory, = ax.plot(
+        self.line_trajectory, = self.ax.plot(
             [], [], color='tab:blue', label='trajectory')
-        self.line_l1, = ax.plot(
+        self.line_l1, = self.ax.plot(
             [], [], color='tab:gray', label='l1', linewidth=3)
-        self.line_l2, = ax.plot(
+        self.line_l2, = self.ax.plot(
             [], [], color='tab:gray', label='l2', linewidth=3)
 
-        ax.set_xlabel('x [mm]')
-        ax.set_ylabel('y [mm]')
+        self.endEffector = patches.Circle(xy=(0, 0), radius=6, fc='tab:blue')
+        self.ax.add_patch(self.endEffector)
+
+        self.ax.set_xlabel('x [mm]')
+        self.ax.set_ylabel('y [mm]')
         maxlen = self.l1 + self.l2 + 10
-        ax.set_xlim(-maxlen, maxlen)
-        ax.set_ylim(-maxlen, maxlen)
-        ax.set_aspect('equal')
+        self.ax.set_xlim(-maxlen, maxlen)
+        self.ax.set_ylim(-maxlen, maxlen)
+        self.ax.set_aspect('equal')
         # ax.legend(loc='lower left')
         # plt.subplots_adjust(left=0.1, right=0.97, bottom=0.04, top=0.97)
 
@@ -60,6 +64,7 @@ class AnimationMaker():
         self.line_l1.set_data([0, x1], [0, y1])
         self.line_l2.set_data([x1, x2], [y1, y2])
         self.line_trajectory.set_data(self.trajectory_x, self.trajectory_y)
+        self.endEffector.set_center([x2, y2])
 
         plt.title('t = {:3.2f} [s], (x, y) = ({:4.0f}, {:4.0f})'.format(
             self.time[i], x2, y2))
@@ -72,7 +77,7 @@ class AnimationMaker():
 if __name__ == '__main__':
     # animationMaker = AnimationMaker('theta1example.csv', 'theta2example.csv', 150, 150)
     animationMaker = AnimationMaker(
-        'data/theta1.csv', 'data/theta2.csv', 140, 160)
+        'data/theta1.csv', 'data/theta2.csv', l1=140, l2=160)
     ani = animationMaker.makeAnimation()
     ani.save('graph/animation.gif', writer='pillow')
 

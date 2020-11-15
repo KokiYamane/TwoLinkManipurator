@@ -115,6 +115,7 @@ class PathPlanner():
         while t < 5:
             t += self.dt
 
+            vx, vy = 0, 0
             delta = 6
             if diff - distance < 1e-10:
                 print('a')
